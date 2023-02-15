@@ -53,6 +53,8 @@ def pa_douban(id,namee):
     file["态度"] = support
     file["评论时间"] = time
     file["具体评论"] = comment
+    sg.Print(file["态度"].value_counts())
+    sg.Print(file["态度"].replace([i for i in file["态度"].unique()],[5-i for i in range(len(file["态度"].unique()))]).mean())
     file.to_excel("D:/{}.xlsx".format(namee),index=False)
     sg.Print("完成")
 
