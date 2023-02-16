@@ -20,7 +20,7 @@ def clear(name,path):
             sg.Print("名字后有空格的为：{}".format(i))
             boo=0
         count=count+1
-    data.to_excel(path)
+    data.to_excel(path,index = False)
     if(boo==1):
         sg.Print("数据正常，无需修改")
     else:
