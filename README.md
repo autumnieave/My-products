@@ -1,2 +1,2 @@
 # My-products
-Some easy python codes made by a student who is poor in programming
+由在读大学生闲的没事干搞出来的东西，纯属垃圾代码，建议不要看
