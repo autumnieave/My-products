@@ -1,11 +1,12 @@
 import PySimpleGUI as sg 
 import time
 import pandas as pd
- 
+import calendar
+
 def m(mon,note):
     rec_time = time.localtime()
     rec = "{}-{}-{}".format(rec_time.tm_year,rec_time.tm_mon,rec_time.tm_mday)
-    old = pd.read_excel(r"C:\Users\黄健朗\Desktop\账本.xlsx")
+    old = pd.read_excel(r"D:\账本.xlsx")
     new_d = pd.DataFrame()
     o_d = list(old["日期"]) 
     o_d.append(rec)
@@ -19,15 +20,16 @@ def m(mon,note):
     new_d["价格"] = o_m
     new_d["备注"] = o_n
     new_d["月份"] = o_mm
-    new_d.to_excel(r"C:\Users\黄健朗\Desktop\账本.xlsx",index=False)
+    new_d.to_excel(r"D:\账本.xlsx",index=False)
     sg.Print("-------------------------------------记录完成------------------------------------")
 def co():
     rec_time = time.localtime()
     rec = "{}-{}-{}".format(rec_time.tm_year,rec_time.tm_mon,rec_time.tm_mday,rec_time.tm_hour,rec_time.tm_min,rec_time.tm_sec)
-    old = pd.read_excel(r"C:\Users\黄健朗\Desktop\账本.xlsx")
+    old = pd.read_excel(r"D:\账本.xlsx")
     sg.Print("预计每日30元，每月小于1500元")
     sg.Print("本日 : {} ，剩余 : {}".format(old.loc[old["日期"]==rec]["价格"].sum(),30-old.loc[old["日期"]==rec]["价格"].sum()))
-    sg.Print("本月 : {} ，剩余 : {}".format(old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum(),1500-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum()))
+    sg.Print("本月 : {} ，剩余 : {} ".format(old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum(),1500-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum()))
+    sg.Print("本月还剩余{}天，平均每天可用 : {}".format(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday,(1500-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum())/(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday)))
 sg.theme('SandyBeach')
 
 layout=[
