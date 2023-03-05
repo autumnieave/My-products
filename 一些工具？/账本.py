@@ -7,7 +7,18 @@ def m(mon,note):
     new_day = False
     rec_time = time.localtime()
     rec = "{}-{}-{}".format(rec_time.tm_year,rec_time.tm_mon,rec_time.tm_mday)
+    acu_time = "{}:{}:{}".format(rec_time.tm_hour,rec_time.tm_min,rec_time.tm_sec)
     old = pd.read_excel(r"D:\账本.xlsx")
+    if rec_time.tm_hour < 10:
+        sg.Print("早上好！")
+    elif rec_time.tm_hour > 18:
+        sg.Print("晚上好")
+    else:
+        sg.Print("中午好！")
+    sg.Print("记录时间：{} {}".format(rec,acu_time))
+    sg.Print("记录内容")
+    sg.Print("价格： {}".format(mon))
+    sg.Print("备注： {}".format(note))
     new_d = pd.DataFrame()
     o_d = list(old["日期"]) 
     if rec != o_d[-1]:
@@ -25,7 +36,7 @@ def m(mon,note):
         left_money = o_o[-1] - int(mon)
         o_o.append(left_money)
     else:
-        left_money = 30 + o_o[-1] - mon
+        left_money = 30 + o_o[-1] - int(mon)
         o_o.append(left_money)
         sg.Print("请注意，今天最好只花{}元".format(left_money))
     new_d["日期"] = o_d
@@ -43,6 +54,7 @@ def co():
     sg.Print("本日 : {} ，剩余 : {}".format(old.loc[old["日期"]==rec]["价格"].sum(),list(old["赊账"])[-1]))
     sg.Print("本月 : {} ，剩余 : {} ".format(old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum(),1300-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum()))
     sg.Print("本月还剩余{}天，平均每天可用 : {}".format(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday,(1300-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum())/(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday)))
+    sg.Print("-------------------------------------统计完成------------------------------------")
 sg.theme('SandyBeach')
 
 layout=[
@@ -59,10 +71,11 @@ while True:
         break
     if event in ("保存"):
         m(values["money"],values["note"])
+        co()
     if event in ("统计"):
         co()
     elif event in ("备注"):
-        sg.Print("备注：请在D盘中创建一个名为账本的excel文件，并在第一行设置：日期，价格，月份，备注")
+        sg.Print("备注：请在D盘中创建一个名为账本的excel文件，并在第一行设置：日期，价格，月份，备注，赊账")
         sg.Print("本程序用于：")
         sg.Print("1.对每日的输出进行记录，内容在D盘中的名为账本的excel文件中。")
         sg.Print("2.对数据进行统计，对每日与每月的金额进行统计以及对这个月后期的金钱的规划。")
