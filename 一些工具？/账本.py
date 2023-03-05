@@ -1,4 +1,4 @@
-import PySimpleGUI as sg 
+import PySimpleGUI as sg
 import time
 import pandas as pd
 import calendar
@@ -8,6 +8,8 @@ def m(mon,note):
     rec_time = time.localtime()
     rec = "{}-{}-{}".format(rec_time.tm_year,rec_time.tm_mon,rec_time.tm_mday)
     acu_time = "{}:{}:{}".format(rec_time.tm_hour,rec_time.tm_min,rec_time.tm_sec)
+    week_list = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"]
+    week_time = "{}".format(week_list[rec_time.tm_wday])
     old = pd.read_excel(r"D:\账本.xlsx")
     if rec_time.tm_hour < 10:
         sg.Print("早上好！")
@@ -15,18 +17,20 @@ def m(mon,note):
         sg.Print("晚上好")
     else:
         sg.Print("中午好！")
-    sg.Print("记录时间：{} {}".format(rec,acu_time))
+    sg.Print("记录时间：{} {} {}".format(rec,acu_time,week_time))
     sg.Print("记录内容")
     sg.Print("价格： {}".format(mon))
     sg.Print("备注： {}".format(note))
     new_d = pd.DataFrame()
-    o_d = list(old["日期"]) 
+    o_d = list(old["日期"])
     if rec != o_d[-1]:
         sg.Print("---------------------------------今天是新的一天！--------------------------------")
         new_day = True
     o_d.append(rec)
     o_m = list(old["价格"])
     o_m.append(mon)
+    o_w = list(old["星期"])
+    o_w.append(week_time)
     o_mm = list(old["月份"])
     o_mm.append(rec_time.tm_mon)
     o_n = list(old["备注"])
@@ -41,6 +45,7 @@ def m(mon,note):
         sg.Print("请注意，今天最好只花{}元".format(left_money))
     new_d["日期"] = o_d
     new_d["价格"] = o_m
+    new_d["星期"] = o_w
     new_d["月份"] = o_mm
     new_d["备注"] = o_n
     new_d["赊账"] = o_o
@@ -49,9 +54,11 @@ def m(mon,note):
 def co():
     rec_time = time.localtime()
     rec = "{}-{}-{}".format(rec_time.tm_year,rec_time.tm_mon,rec_time.tm_mday,rec_time.tm_hour,rec_time.tm_min,rec_time.tm_sec)
+    week_list = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     old = pd.read_excel(r"D:\账本.xlsx")
     sg.Print("预计每日30元，每周小于300元，每月小于1300元")
     sg.Print("本日 : {} ，剩余 : {}".format(old.loc[old["日期"]==rec]["价格"].sum(),list(old["赊账"])[-1]))
+    sg.Print("本周 : {} ，剩余 : {}".format(old.loc[old["星期"]==week_list[rec_time.tm_wday]]["价格"].sum(), list(old["赊账"])[-1])+(6-rec_time.tm_wday)*30)
     sg.Print("本月 : {} ，剩余 : {} ".format(old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum(),1300-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum()))
     sg.Print("本月还剩余{}天，平均每天可用 : {}".format(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday,(1300-old.loc[old["月份"]==rec_time.tm_mon]["价格"].sum())/(calendar.monthrange(rec_time.tm_year,rec_time.tm_mon)[1]-rec_time.tm_mday)))
     sg.Print("-------------------------------------统计完成------------------------------------")
