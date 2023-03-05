@@ -33,10 +33,10 @@ def m(mon,note):
     o_n.append(note)
     o_o = list(old["赊账"])
     if new_day == False:
-        left_money = o_o[-1] - int(mon)
+        left_money = o_o[-1] - float(mon)
         o_o.append(left_money)
     else:
-        left_money = 30 + o_o[-1] - int(mon)
+        left_money = 30 + o_o[-1] - float(mon)
         o_o.append(left_money)
         sg.Print("请注意，今天最好只花{}元".format(left_money))
     new_d["日期"] = o_d
