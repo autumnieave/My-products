@@ -1,2 +1,4 @@
-# My-products
-由在读大学生闲的没事干搞出来的东西，纯属垃圾代码，仅用于个人备份建议不要看
+# works
+Some works.(with friend)
+
+
